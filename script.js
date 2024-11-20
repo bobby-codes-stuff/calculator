@@ -45,7 +45,6 @@ class Calculator {
         const num1 = parseFloat(this.prevOperand);
         const num2 = parseFloat(this.currOperand);
         if (isNaN(num1) || isNaN(num2)) return // early return if an invalid / missing number
-        console.log(this.operation)
         switch (this.operation){
             case '+':
                 result = num1 + num2;
@@ -78,7 +77,6 @@ class Calculator {
         else {
             integerDisplay = integerDigits.toLocaleString('en', {maximumFractionDigits: 0});
         }
-        console.log(stringNumber.split('.')[1]);
         if (decimalDigits != null) {
             if (integerDisplay === '') {
                 return `0.${decimalDigits}`;
@@ -98,6 +96,8 @@ class Calculator {
         }
     }
 }
+
+const container = document.querySelector('main#calculator');
 
 const numberButtons = document.querySelectorAll('[data-number]');
 const operationButtons = document.querySelectorAll('[data-operation]');
@@ -143,4 +143,27 @@ deleteButton.addEventListener('click', () => {
 invertButton.addEventListener('click', () => {
     calculator.invert();
     calculator.updateDisplay();
+});
+
+// keyboard support
+// keypress is invoked only for character (printable) keys
+document.addEventListener('keydown', (e) => {
+    const numRegex = /^[0-9\.]$/;
+    const operationRegex = /^[\+\-\*\/]$/;
+    if (numRegex.test(e.key)) {
+        calculator.appendNumber(e.key);
+        calculator.updateDisplay();
+    }
+    else if (operationRegex.test(e.key)) {
+        calculator.chooseOperation(e.key);
+        calculator.updateDisplay();
+    }
+    else if (e.key == '=' || e.key == 'Enter') {
+        calculator.compute();
+        calculator.updateDisplay();
+    }
+    else if (e.key == 'Backspace' || e.key == 'Delete') {
+        calculator.delete();
+        calculator.updateDisplay();
+    }
 });
